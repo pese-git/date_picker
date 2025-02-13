@@ -67,7 +67,9 @@ class DatePicker extends StatefulWidget {
     this.disabledCellsTextStyle,
     this.disabledCellsDecoration = const BoxDecoration(),
     this.currentDateTextStyle,
-    this.currentDateDecoration,
+    this.currentDateDayDecoration,
+    this.currentDateMonthDecoration,
+    this.currentDateYearDecoration,
     this.selectedCellTextStyle,
     this.selectedCellDecoration,
     this.leadingDateTextStyle,
@@ -76,7 +78,11 @@ class DatePicker extends StatefulWidget {
     this.highlightColor,
     this.splashColor,
     this.splashRadius,
+    this.monthWidgetMargin,
+    this.yearWidgetMargin,
     this.useWidgetMaxHeight = false,
+    this.monthSelectedStateIsEnabled = true,
+    this.yearSelectedStateIsEnabled = true,
     this.centerLeadingDate = false,
     this.previousPageSemanticLabel,
     this.nextPageSemanticLabel,
@@ -162,10 +168,20 @@ class DatePicker extends StatefulWidget {
   /// and [ColorScheme.primary] color.
   final TextStyle? currentDateTextStyle;
 
-  /// The cell decoration of the current date.
+  /// The cell decoration of the current date in days picker mode.
   ///
   /// defaults to circle stroke border with [ColorScheme.primary] color.
-  final BoxDecoration? currentDateDecoration;
+  final BoxDecoration? currentDateDayDecoration;
+
+  /// The cell decoration of the current date in months picker mode.
+  ///
+  /// defaults to circle stroke border with [ColorScheme.primary] color.
+  final BoxDecoration? currentDateMonthDecoration;
+
+  /// The cell decoration of the current date in years picker mode.
+  ///
+  /// defaults to circle stroke border with [ColorScheme.primary] color.
+  final BoxDecoration? currentDateYearDecoration;
 
   /// The text style of selected cell.
   ///
@@ -235,6 +251,20 @@ class DatePicker extends StatefulWidget {
   /// height.
   final bool useWidgetMaxHeight;
 
+  /// The margin of month widget.
+  final EdgeInsetsGeometry? monthWidgetMargin;
+
+  /// The margin of year widget.
+  final EdgeInsetsGeometry? yearWidgetMargin;
+
+  /// A boolean field indicating if the month selected state feature is currently
+  /// enabled or active.
+  final bool monthSelectedStateIsEnabled;
+
+  /// A boolean field indicating if the year selected state feature is currently
+  /// enabled or active.
+  final bool yearSelectedStateIsEnabled;
+
   @override
   State<DatePicker> createState() => _DatePickerState();
 }
@@ -262,19 +292,17 @@ class _DatePickerState extends State<DatePicker> {
   @override
   void didUpdateWidget(covariant DatePicker oldWidget) {
     if (oldWidget.initialDate != widget.initialDate) {
-      final clampedInitailDate = DateUtilsX.clampDateToRange(
+      final clampedInitialDate = DateUtilsX.clampDateToRange(
           max: widget.maxDate, min: widget.minDate, date: DateTime.now());
       _displayedDate =
-          DateUtils.dateOnly(widget.initialDate ?? clampedInitailDate);
+          DateUtils.dateOnly(widget.initialDate ?? clampedInitialDate);
     }
     if (oldWidget.initialPickerType != widget.initialPickerType) {
       _pickerType = widget.initialPickerType;
     }
-    if (oldWidget.selectedDate != widget.selectedDate) {
-      _selectedDate = widget.selectedDate != null
-          ? DateUtils.dateOnly(widget.selectedDate!)
-          : null;
-    }
+    _selectedDate = widget.selectedDate != null
+        ? DateUtils.dateOnly(widget.selectedDate!)
+        : null;
     super.didUpdateWidget(oldWidget);
   }
 
@@ -297,7 +325,7 @@ class _DatePickerState extends State<DatePicker> {
             enabledCellsDecoration: widget.enabledCellsDecoration,
             disabledCellsTextStyle: widget.disabledCellsTextStyle,
             disabledCellsDecoration: widget.disabledCellsDecoration,
-            currentDateDecoration: widget.currentDateDecoration,
+            currentDateDecoration: widget.currentDateDayDecoration,
             currentDateTextStyle: widget.currentDateTextStyle,
             selectedCellDecoration: widget.selectedCellDecoration,
             selectedCellTextStyle: widget.selectedCellTextStyle,
@@ -336,7 +364,7 @@ class _DatePickerState extends State<DatePicker> {
                 DateUtils.dateOnly(widget.currentDate ?? DateTime.now()),
             maxDate: DateUtils.dateOnly(widget.maxDate),
             minDate: DateUtils.dateOnly(widget.minDate),
-            currentDateDecoration: widget.currentDateDecoration,
+            currentDateDecoration: widget.currentDateMonthDecoration,
             currentDateTextStyle: widget.currentDateTextStyle,
             disabledCellsDecoration: widget.disabledCellsDecoration,
             disabledCellsTextStyle: widget.disabledCellsTextStyle,
@@ -350,6 +378,8 @@ class _DatePickerState extends State<DatePicker> {
             splashColor: widget.splashColor,
             highlightColor: widget.highlightColor,
             splashRadius: widget.splashRadius,
+            monthWidgetMargin: widget.monthWidgetMargin,
+            selectedStateIsEnabled: widget.monthSelectedStateIsEnabled,
             previousPageSemanticLabel: widget.previousPageSemanticLabel,
             nextPageSemanticLabel: widget.nextPageSemanticLabel,
             onLeadingDateTap: () {
@@ -382,7 +412,7 @@ class _DatePickerState extends State<DatePicker> {
                 DateUtils.dateOnly(widget.currentDate ?? DateTime.now()),
             maxDate: DateUtils.dateOnly(widget.maxDate),
             minDate: DateUtils.dateOnly(widget.minDate),
-            currentDateDecoration: widget.currentDateDecoration,
+            currentDateDecoration: widget.currentDateYearDecoration,
             currentDateTextStyle: widget.currentDateTextStyle,
             disabledCellsDecoration: widget.disabledCellsDecoration,
             disabledCellsTextStyle: widget.disabledCellsTextStyle,
@@ -396,6 +426,8 @@ class _DatePickerState extends State<DatePicker> {
             splashColor: widget.splashColor,
             highlightColor: widget.highlightColor,
             splashRadius: widget.splashRadius,
+            yearWidgetMargin: widget.yearWidgetMargin,
+            selectedStateIsEnabled: widget.yearSelectedStateIsEnabled,
             previousPageSemanticLabel: widget.previousPageSemanticLabel,
             nextPageSemanticLabel: widget.nextPageSemanticLabel,
             onDateSelected: (selectedYear) {
