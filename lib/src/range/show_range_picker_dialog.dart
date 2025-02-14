@@ -110,7 +110,7 @@ Future<DateTimeRange?> showRangePickerDialog({
                 onRangeSelected: (value) => Navigator.pop(context, value),
                 initialPickerType: initialPickerType,
                 padding: contentPadding,
-                currentDateDecoration: currentDateDecoration,
+                currentDateDayDecoration: currentDateDecoration,
                 currentDateTextStyle: currentDateTextStyle,
                 disabledCellsDecoration: disabledCellsDecoration,
                 disabledCellsTextStyle: disabledCellsTextStyle,

@@ -30,6 +30,8 @@ class MonthView extends StatelessWidget {
     required this.highlightColor,
     required this.splashColor,
     this.splashRadius,
+    this.selectedStateIsEnabled = true,
+    this.monthWidgetMargin = EdgeInsets.zero,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
     assert(() {
@@ -110,6 +112,13 @@ class MonthView extends StatelessWidget {
   /// The radius of the ink splash.
   final double? splashRadius;
 
+  /// The margin of month widget.
+  final EdgeInsetsGeometry? monthWidgetMargin;
+
+  /// A boolean field indicating if the selected state feature is currently
+  /// enabled or active.
+  final bool selectedStateIsEnabled;
+
   @override
   Widget build(BuildContext context) {
     final MaterialLocalizations localizations =
@@ -153,7 +162,7 @@ class MonthView extends StatelessWidget {
         style = currentDateTextStyle;
         decoration = currentDateDecoration;
       }
-      if (isSelected) {
+      if (isSelected && selectedStateIsEnabled) {
         //
         //
         style = selectedCellTextStyle;
@@ -167,6 +176,7 @@ class MonthView extends StatelessWidget {
 
       Widget monthWidget = Container(
         decoration: decoration,
+        margin: monthWidgetMargin,
         child: Center(
           child: Text(
             monthsNames[month],

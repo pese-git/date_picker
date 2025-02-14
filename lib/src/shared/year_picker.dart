@@ -66,6 +66,8 @@ class YearsPicker extends StatefulWidget {
     this.highlightColor,
     this.splashColor,
     this.splashRadius,
+    this.yearWidgetMargin,
+    this.selectedStateIsEnabled = true,
     this.centerLeadingDate = false,
     this.previousPageSemanticLabel = 'Previous Year',
     this.nextPageSemanticLabel = 'Next Year',
@@ -223,6 +225,13 @@ class YearsPicker extends StatefulWidget {
 
   /// Semantic label for button to go to the next page.
   final String? nextPageSemanticLabel;
+
+  /// The margin of year widget.
+  final EdgeInsetsGeometry? yearWidgetMargin;
+
+  /// A boolean field indicating if the selected state feature is currently
+  /// enabled or active.
+  final bool selectedStateIsEnabled;
 
   @override
   State<YearsPicker> createState() => _YearsPickerState();
@@ -471,6 +480,8 @@ class _YearsPickerState extends State<YearsPicker> {
                     highlightColor: highlightColor,
                     splashColor: splashColor,
                     splashRadius: widget.splashRadius,
+                    yearWidgetMargin: widget.yearWidgetMargin,
+                    selectedStateIsEnabled: widget.selectedStateIsEnabled,
                     onChanged: (value) {
                       final selected = DateUtilsX.yearOnly(value);
                       widget.onDateSelected?.call(selected);

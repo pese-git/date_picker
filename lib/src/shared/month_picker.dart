@@ -68,7 +68,9 @@ class MonthPicker extends StatefulWidget {
     this.highlightColor,
     this.splashColor,
     this.splashRadius,
+    this.monthWidgetMargin,
     this.centerLeadingDate = false,
+    this.selectedStateIsEnabled = true,
     this.previousPageSemanticLabel = 'Previous Month',
     this.nextPageSemanticLabel = 'Next Month',
   }) {
@@ -225,6 +227,13 @@ class MonthPicker extends StatefulWidget {
 
   /// Semantic label for button to go to the next page.
   final String? nextPageSemanticLabel;
+
+  /// The margin of month widget.
+  final EdgeInsetsGeometry? monthWidgetMargin;
+
+  /// A boolean field indicating if the selected state feature is currently
+  /// enabled or active.
+  final bool selectedStateIsEnabled;
 
   @override
   State<MonthPicker> createState() => _MonthPickerState();
@@ -462,6 +471,8 @@ class _MonthPickerState extends State<MonthPicker> {
                     highlightColor: highlightColor,
                     splashColor: splashColor,
                     splashRadius: widget.splashRadius,
+                    monthWidgetMargin: widget.monthWidgetMargin,
+                    selectedStateIsEnabled: widget.selectedStateIsEnabled,
                     onChanged: (value) {
                       final selected = DateUtilsX.monthOnly(value);
                       widget.onDateSelected?.call(selected);
