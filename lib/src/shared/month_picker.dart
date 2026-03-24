@@ -71,8 +71,14 @@ class MonthPicker extends StatefulWidget {
     this.monthWidgetMargin,
     this.centerLeadingDate = false,
     this.selectedStateIsEnabled = true,
-    this.previousPageSemanticLabel = 'Previous Month',
-    this.nextPageSemanticLabel = 'Next Month',
+    this.previousPageSemanticLabel,
+    this.nextPageSemanticLabel,
+    this.forwardButtonDecoration = const BoxDecoration(),
+    this.forwardButtonSplashColor = Colors.transparent,
+    this.forwardButtonHighlightColor = Colors.transparent,
+    this.backwardButtonDecoration = const BoxDecoration(),
+    this.backwardButtonSplashColor = Colors.transparent,
+    this.backwardButtonHighlightColor = Colors.transparent,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
 
@@ -235,6 +241,36 @@ class MonthPicker extends StatefulWidget {
   /// enabled or active.
   final bool selectedStateIsEnabled;
 
+  /// The cell decoration of the forward button.
+  ///
+  /// defaults to empty [BoxDecoration].
+  final BoxDecoration forwardButtonDecoration;
+
+  /// The splash color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color forwardButtonSplashColor;
+
+  /// The highlight color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color forwardButtonHighlightColor;
+
+  /// The cell decoration of the backward button.
+  ///
+  /// defaults to empty [BoxDecoration].
+  final BoxDecoration backwardButtonDecoration;
+
+  /// The splash color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color backwardButtonSplashColor;
+
+  /// The highlight color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color backwardButtonHighlightColor;
+
   @override
   State<MonthPicker> createState() => _MonthPickerState();
 }
@@ -250,14 +286,11 @@ class _MonthPickerState extends State<MonthPicker> {
 
   @override
   void initState() {
-    final clampedInitailDate = DateUtilsX.clampDateToRange(
-        max: widget.maxDate, min: widget.minDate, date: DateTime.now());
-    _displayedYear =
-        DateUtilsX.yearOnly(widget.initialDate ?? clampedInitailDate);
+    final clampedInitailDate =
+        DateUtilsX.clampDateToRange(max: widget.maxDate, min: widget.minDate, date: DateTime.now());
+    _displayedYear = DateUtilsX.yearOnly(widget.initialDate ?? clampedInitailDate);
 
-    _selectedDate = widget.selectedDate != null
-        ? DateUtilsX.monthOnly(widget.selectedDate!)
-        : null;
+    _selectedDate = widget.selectedDate != null ? DateUtilsX.monthOnly(widget.selectedDate!) : null;
     _pageController = PageController(
       initialPage: (_displayedYear!.year - widget.minDate.year),
     );
@@ -271,17 +304,14 @@ class _MonthPickerState extends State<MonthPicker> {
     // but for makeing debuging easy, we will navigate to the initial date again
     // if it changes.
     if (oldWidget.initialDate != widget.initialDate) {
-      final clampedInitailDate = DateUtilsX.clampDateToRange(
-          max: widget.maxDate, min: widget.minDate, date: DateTime.now());
-      _displayedYear =
-          DateUtilsX.yearOnly(widget.initialDate ?? clampedInitailDate);
+      final clampedInitailDate =
+          DateUtilsX.clampDateToRange(max: widget.maxDate, min: widget.minDate, date: DateTime.now());
+      _displayedYear = DateUtilsX.yearOnly(widget.initialDate ?? clampedInitailDate);
       _pageController.jumpToPage(_displayedYear!.year - widget.minDate.year);
     }
 
     if (oldWidget.selectedDate != _selectedDate) {
-      _selectedDate = widget.selectedDate != null
-          ? DateUtilsX.monthOnly(widget.selectedDate!)
-          : null;
+      _selectedDate = widget.selectedDate != null ? DateUtilsX.monthOnly(widget.selectedDate!) : null;
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -318,11 +348,10 @@ class _MonthPickerState extends State<MonthPicker> {
     final TextStyle disabledCellsTextStyle = widget.disabledCellsTextStyle ??
         textTheme.titleLarge!.copyWith(
           fontWeight: FontWeight.normal,
-          color: colorScheme.onSurface.withOpacity(0.30),
+          color: colorScheme.onSurface.withValues(alpha: 0.30),
         );
 
-    final BoxDecoration disbaledCellsDecoration =
-        widget.disabledCellsDecoration;
+    final BoxDecoration disbaledCellsDecoration = widget.disabledCellsDecoration;
 
     //
     //! current
@@ -352,12 +381,11 @@ class _MonthPickerState extends State<MonthPicker> {
           color: colorScheme.onPrimary,
         );
 
-    final BoxDecoration selectedCellDecoration =
-        widget.selectedCellDecoration ??
-            BoxDecoration(
-              color: colorScheme.primary,
-              shape: BoxShape.circle,
-            );
+    final BoxDecoration selectedCellDecoration = widget.selectedCellDecoration ??
+        BoxDecoration(
+          color: colorScheme.primary,
+          shape: BoxShape.circle,
+        );
 
     //
     //
@@ -370,24 +398,23 @@ class _MonthPickerState extends State<MonthPicker> {
           color: Theme.of(context).colorScheme.primary,
         );
 
-    final slidersColor =
-        widget.slidersColor ?? Theme.of(context).colorScheme.primary;
+    final slidersColor = widget.slidersColor ?? Theme.of(context).colorScheme.primary;
 
     final slidersSize = widget.slidersSize ?? 20;
 
     //
     //! splash
     final splashColor = widget.splashColor ??
-        selectedCellDecoration.color?.withOpacity(0.3) ??
-        colorScheme.primary.withOpacity(0.3);
+        selectedCellDecoration.color?.withValues(alpha: 0.3) ??
+        colorScheme.primary.withValues(alpha: 0.3);
 
     final highlightColor = widget.highlightColor ??
-        selectedCellDecoration.color?.withOpacity(0.3) ??
-        colorScheme.primary.withOpacity(0.3);
+        selectedCellDecoration.color?.withValues(alpha: 0.3) ??
+        colorScheme.primary.withValues(alpha: 0.3);
     //
     //
 
-    return DeviceOrientationBuilder(builder: (context, o) {
+    return PickerDeviceOrientationBuilder(builder: (context, o) {
       late final Size size;
       switch (o) {
         case Orientation.portrait:
@@ -405,8 +432,15 @@ class _MonthPickerState extends State<MonthPicker> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Header(
-              previousPageSemanticLabel: widget.previousPageSemanticLabel,
-              nextPageSemanticLabel: widget.nextPageSemanticLabel,
+              forwardButtonDecoration: widget.forwardButtonDecoration,
+              forwardButtonSplashColor: widget.forwardButtonSplashColor,
+              forwardButtonHighlightColor: widget.forwardButtonHighlightColor,
+              backwardButtonDecoration: widget.backwardButtonDecoration,
+              backwardButtonSplashColor: widget.backwardButtonSplashColor,
+              backwardButtonHighlightColor: widget.forwardButtonHighlightColor,
+              previousPageSemanticLabel:
+                  widget.previousPageSemanticLabel ?? MaterialLocalizations.of(context).previousPageTooltip,
+              nextPageSemanticLabel: widget.nextPageSemanticLabel ?? MaterialLocalizations.of(context).nextPageTooltip,
               centerLeadingDate: widget.centerLeadingDate,
               leadingDateTextStyle: leadingDateTextStyle,
               slidersColor: slidersColor,

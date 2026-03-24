@@ -69,8 +69,14 @@ class YearsPicker extends StatefulWidget {
     this.yearWidgetMargin,
     this.selectedStateIsEnabled = true,
     this.centerLeadingDate = false,
-    this.previousPageSemanticLabel = 'Previous Year',
-    this.nextPageSemanticLabel = 'Next Year',
+    this.previousPageSemanticLabel,
+    this.nextPageSemanticLabel,
+    this.forwardButtonDecoration = const BoxDecoration(),
+    this.forwardButtonSplashColor = Colors.transparent,
+    this.forwardButtonHighlightColor = Colors.transparent,
+    this.backwardButtonDecoration = const BoxDecoration(),
+    this.backwardButtonSplashColor = Colors.transparent,
+    this.backwardButtonHighlightColor = Colors.transparent,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
 
@@ -233,6 +239,36 @@ class YearsPicker extends StatefulWidget {
   /// enabled or active.
   final bool selectedStateIsEnabled;
 
+  /// The cell decoration of the forward button.
+  ///
+  /// defaults to empty [BoxDecoration].
+  final BoxDecoration forwardButtonDecoration;
+
+  /// The splash color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color forwardButtonSplashColor;
+
+  /// The highlight color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color forwardButtonHighlightColor;
+
+  /// The cell decoration of the backward button.
+  ///
+  /// defaults to empty [BoxDecoration].
+  final BoxDecoration backwardButtonDecoration;
+
+  /// The splash color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color backwardButtonSplashColor;
+
+  /// The highlight color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color backwardButtonHighlightColor;
+
   @override
   State<YearsPicker> createState() => _YearsPickerState();
 }
@@ -252,9 +288,7 @@ class _YearsPickerState extends State<YearsPicker> {
       start: DateTime(widget.minDate.year + initialPageNumber * 12),
       end: DateTime(widget.minDate.year + initialPageNumber * 12 - 1 + 12),
     );
-    _selectedDate = widget.selectedDate != null
-        ? DateUtilsX.yearOnly(widget.selectedDate!)
-        : null;
+    _selectedDate = widget.selectedDate != null ? DateUtilsX.yearOnly(widget.selectedDate!) : null;
     super.initState();
   }
 
@@ -272,9 +306,7 @@ class _YearsPickerState extends State<YearsPicker> {
     }
 
     if (oldWidget.selectedDate != widget.selectedDate) {
-      _selectedDate = widget.selectedDate != null
-          ? DateUtilsX.yearOnly(widget.selectedDate!)
-          : null;
+      _selectedDate = widget.selectedDate != null ? DateUtilsX.yearOnly(widget.selectedDate!) : null;
     }
 
     super.didUpdateWidget(oldWidget);
@@ -290,12 +322,11 @@ class _YearsPickerState extends State<YearsPicker> {
   /// between [minDate] and [maxDate].
   ///
   /// Each page will contains 12 years in a 3 x 4 grid.
-  int get pageCount =>
-      ((widget.maxDate.year - widget.minDate.year + 1) / 12).ceil();
+  int get pageCount => ((widget.maxDate.year - widget.minDate.year + 1) / 12).ceil();
 
   int get initialPageNumber {
-    final clampedInitailDate = DateUtilsX.clampDateToRange(
-        max: widget.maxDate, min: widget.minDate, date: DateTime.now());
+    final clampedInitailDate =
+        DateUtilsX.clampDateToRange(max: widget.maxDate, min: widget.minDate, date: DateTime.now());
     final init = widget.initialDate ?? clampedInitailDate;
 
     final page = ((init.year - widget.minDate.year + 1) / 12).ceil() - 1;
@@ -336,11 +367,10 @@ class _YearsPickerState extends State<YearsPicker> {
     final TextStyle disabledCellsTextStyle = widget.disabledCellsTextStyle ??
         textTheme.titleLarge!.copyWith(
           fontWeight: FontWeight.normal,
-          color: colorScheme.onSurface.withOpacity(0.30),
+          color: colorScheme.onSurface.withValues(alpha: 0.30),
         );
 
-    final BoxDecoration disbaledCellsDecoration =
-        widget.disabledCellsDecoration;
+    final BoxDecoration disbaledCellsDecoration = widget.disabledCellsDecoration;
 
     //
     //! current
@@ -370,12 +400,11 @@ class _YearsPickerState extends State<YearsPicker> {
           color: colorScheme.onPrimary,
         );
 
-    final BoxDecoration selectedCellDecoration =
-        widget.selectedCellDecoration ??
-            BoxDecoration(
-              color: colorScheme.primary,
-              shape: BoxShape.circle,
-            );
+    final BoxDecoration selectedCellDecoration = widget.selectedCellDecoration ??
+        BoxDecoration(
+          color: colorScheme.primary,
+          shape: BoxShape.circle,
+        );
 
     //
     //
@@ -388,24 +417,23 @@ class _YearsPickerState extends State<YearsPicker> {
           color: Theme.of(context).colorScheme.primary,
         );
 
-    final slidersColor =
-        widget.slidersColor ?? Theme.of(context).colorScheme.primary;
+    final slidersColor = widget.slidersColor ?? Theme.of(context).colorScheme.primary;
 
     final slidersSize = widget.slidersSize ?? 20;
 
     //
     //! splash
     final splashColor = widget.splashColor ??
-        selectedCellDecoration.color?.withOpacity(0.3) ??
-        colorScheme.primary.withOpacity(0.3);
+        selectedCellDecoration.color?.withValues(alpha: 0.3) ??
+        colorScheme.primary.withValues(alpha: 0.3);
 
     final highlightColor = widget.highlightColor ??
-        selectedCellDecoration.color?.withOpacity(0.3) ??
-        colorScheme.primary.withOpacity(0.3);
+        selectedCellDecoration.color?.withValues(alpha: 0.3) ??
+        colorScheme.primary.withValues(alpha: 0.3);
     //
     //
 
-    return DeviceOrientationBuilder(builder: (context, o) {
+    return PickerDeviceOrientationBuilder(builder: (context, o) {
       late final Size size;
       switch (o) {
         case Orientation.portrait:
@@ -423,15 +451,21 @@ class _YearsPickerState extends State<YearsPicker> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Header(
-              previousPageSemanticLabel: widget.previousPageSemanticLabel,
-              nextPageSemanticLabel: widget.nextPageSemanticLabel,
+              forwardButtonDecoration: widget.forwardButtonDecoration,
+              forwardButtonSplashColor: widget.forwardButtonSplashColor,
+              forwardButtonHighlightColor: widget.forwardButtonHighlightColor,
+              backwardButtonDecoration: widget.backwardButtonDecoration,
+              backwardButtonSplashColor: widget.backwardButtonSplashColor,
+              backwardButtonHighlightColor: widget.forwardButtonHighlightColor,
+              previousPageSemanticLabel:
+                  widget.previousPageSemanticLabel ?? MaterialLocalizations.of(context).previousPageTooltip,
+              nextPageSemanticLabel: widget.nextPageSemanticLabel ?? MaterialLocalizations.of(context).nextPageTooltip,
               centerLeadingDate: widget.centerLeadingDate,
               leadingDateTextStyle: leadingDateTextStyle,
               slidersColor: slidersColor,
               slidersSize: slidersSize,
               onDateTap: () => widget.onLeadingDateTap?.call(),
-              displayedDate:
-                  '${_displayedRange?.start.year} - ${_displayedRange?.end.year}',
+              displayedDate: '${_displayedRange?.start.year} - ${_displayedRange?.end.year}',
               onNextPage: () {
                 _pageController.nextPage(
                   duration: const Duration(milliseconds: 300),

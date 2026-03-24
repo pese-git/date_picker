@@ -72,9 +72,15 @@ class DaysPicker extends StatefulWidget {
     this.splashRadius,
     this.useWidgetMaxHeight = false,
     this.centerLeadingDate = false,
-    this.previousPageSemanticLabel = 'Previous Day',
-    this.nextPageSemanticLabel = 'Next Day',
+    this.previousPageSemanticLabel,
+    this.nextPageSemanticLabel,
     this.disabledDayPredicate,
+    this.forwardButtonDecoration = const BoxDecoration(),
+    this.forwardButtonSplashColor = Colors.transparent,
+    this.forwardButtonHighlightColor = Colors.transparent,
+    this.backwardButtonDecoration = const BoxDecoration(),
+    this.backwardButtonSplashColor = Colors.transparent,
+    this.backwardButtonHighlightColor = Colors.transparent,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
     assert(
@@ -245,6 +251,36 @@ class DaysPicker extends StatefulWidget {
   /// height.
   final bool useWidgetMaxHeight;
 
+  /// The cell decoration of the forward button.
+  ///
+  /// defaults to empty [BoxDecoration].
+  final BoxDecoration forwardButtonDecoration;
+
+  /// The splash color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color forwardButtonSplashColor;
+
+  /// The highlight color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color forwardButtonHighlightColor;
+
+  /// The cell decoration of the backward button.
+  ///
+  /// defaults to empty [BoxDecoration].
+  final BoxDecoration backwardButtonDecoration;
+
+  /// The splash color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color backwardButtonSplashColor;
+
+  /// The highlight color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color backwardButtonHighlightColor;
+
   @override
   State<DaysPicker> createState() => _DaysPickerState();
 }
@@ -314,7 +350,7 @@ class _DaysPickerState extends State<DaysPicker> {
     //
     final TextStyle daysOfTheWeekTextStyle = widget.daysOfTheWeekTextStyle ??
         textTheme.titleSmall!.copyWith(
-          color: colorScheme.onSurface.withOpacity(0.30),
+          color: colorScheme.onSurface.withValues(alpha: 0.30),
           fontWeight: FontWeight.bold,
           fontSize: 14,
         );
@@ -340,7 +376,7 @@ class _DaysPickerState extends State<DaysPicker> {
     final TextStyle disabledCellsTextStyle = widget.disabledCellsTextStyle ??
         textTheme.titleLarge!.copyWith(
           fontWeight: FontWeight.normal,
-          color: colorScheme.onSurface.withOpacity(0.30),
+          color: colorScheme.onSurface.withValues(alpha: 0.30),
         );
 
     final BoxDecoration disbaledCellsDecoration =
@@ -399,16 +435,16 @@ class _DaysPickerState extends State<DaysPicker> {
     //
     //! splash
     final splashColor = widget.splashColor ??
-        selectedCellDecoration.color?.withOpacity(0.3) ??
-        colorScheme.primary.withOpacity(0.3);
+        selectedCellDecoration.color?.withValues(alpha: 0.3) ??
+        colorScheme.primary.withValues(alpha: 0.3);
 
     final highlightColor = widget.highlightColor ??
-        selectedCellDecoration.color?.withOpacity(0.3) ??
-        colorScheme.primary.withOpacity(0.3);
+        selectedCellDecoration.color?.withValues(alpha: 0.3) ??
+        colorScheme.primary.withValues(alpha: 0.3);
     //
     //
 
-    return DeviceOrientationBuilder(builder: (context, o) {
+    return PickerDeviceOrientationBuilder(builder: (context, o) {
       late final Size size;
       switch (o) {
         case Orientation.portrait:
@@ -427,6 +463,15 @@ class _DaysPickerState extends State<DaysPicker> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Header(
+              forwardButtonDecoration: widget.forwardButtonDecoration,
+              forwardButtonSplashColor: widget.forwardButtonSplashColor,
+              forwardButtonHighlightColor: widget.forwardButtonHighlightColor,
+              backwardButtonDecoration: widget.backwardButtonDecoration,
+              backwardButtonSplashColor: widget.backwardButtonSplashColor,
+              backwardButtonHighlightColor: widget.forwardButtonHighlightColor,
+              previousPageSemanticLabel:
+                  widget.previousPageSemanticLabel ?? MaterialLocalizations.of(context).previousPageTooltip,
+              nextPageSemanticLabel: widget.nextPageSemanticLabel ?? MaterialLocalizations.of(context).nextPageTooltip,
               centerLeadingDate: widget.centerLeadingDate,
               leadingDateTextStyle: leadingDateTextStyle,
               slidersColor: slidersColor,
@@ -456,8 +501,6 @@ class _DaysPickerState extends State<DaysPicker> {
                   curve: Curves.ease,
                 );
               },
-              previousPageSemanticLabel: widget.previousPageSemanticLabel,
-              nextPageSemanticLabel: widget.nextPageSemanticLabel,
             ),
             const SizedBox(height: 10),
             Expanded(

@@ -1,3 +1,19 @@
+# 6.0.0
+
+- Revert removing `DeviceOrientationBuilder` in favor of rename it.
+- Fix semantic. fixes [#39](https://github.com/hasanmhallak/date_picker/issues/39)
+- Resolve conflicts with Flutter v3.41.0. fixes [#43](https://github.com/hasanmhallak/date_picker/issues/43)
+- Add decoration to the pageview sliders.
+
+# 5.0.0
+
+- Remove `DeviceOrientationBuilder` in favor of Flutter Native one interduce in Material Package.
+- Add Flutter v27.0.0 and dart 3.6 constraints.
+
+# 4.2.0
+
+- Adding pass-thru callbacks for onLeadingDateTap, onStartDateChanged, and onEndDateChanged for the RangeDatePicker widget. thanks to @coogle [here.](https://github.com/hasanmhallak/date_picker/pull/33)
+
 # 4.1.0
 
 - Add `disabledDayPredicate` to provide a way to disable days with custom logic.

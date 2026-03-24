@@ -36,16 +36,21 @@ class RangeDaysPicker extends StatefulWidget {
     this.splashColor,
     this.splashRadius,
     this.centerLeadingDate = false,
-    this.previousPageSemanticLabel = 'Previous Day',
-    this.nextPageSemanticLabel = 'Next Day',
+    this.previousPageSemanticLabel,
+    this.nextPageSemanticLabel,
+    this.forwardButtonDecoration = const BoxDecoration(),
+    this.forwardButtonSplashColor = Colors.transparent,
+    this.forwardButtonHighlightColor = Colors.transparent,
+    this.backwardButtonDecoration = const BoxDecoration(),
+    this.backwardButtonSplashColor = Colors.transparent,
+    this.backwardButtonHighlightColor = Colors.transparent,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
 
     assert(
       () {
         if (initialDate == null) return true;
-        final init =
-            DateTime(initialDate!.year, initialDate!.month, initialDate!.day);
+        final init = DateTime(initialDate!.year, initialDate!.month, initialDate!.day);
 
         final min = DateTime(minDate.year, minDate.month, minDate.day);
 
@@ -56,8 +61,7 @@ class RangeDaysPicker extends StatefulWidget {
     assert(
       () {
         if (initialDate == null) return true;
-        final init =
-            DateTime(initialDate!.year, initialDate!.month, initialDate!.day);
+        final init = DateTime(initialDate!.year, initialDate!.month, initialDate!.day);
 
         final max = DateTime(maxDate.year, maxDate.month, maxDate.day);
         return init.isBefore(max) || init.isAtSameMomentAs(max);
@@ -214,6 +218,36 @@ class RangeDaysPicker extends StatefulWidget {
   /// Semantic label for button to go to the next page
   final String? nextPageSemanticLabel;
 
+  /// The cell decoration of the forward button.
+  ///
+  /// defaults to empty [BoxDecoration].
+  final BoxDecoration forwardButtonDecoration;
+
+  /// The splash color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color forwardButtonSplashColor;
+
+  /// The highlight color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color forwardButtonHighlightColor;
+
+  /// The cell decoration of the backward button.
+  ///
+  /// defaults to empty [BoxDecoration].
+  final BoxDecoration backwardButtonDecoration;
+
+  /// The splash color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color backwardButtonSplashColor;
+
+  /// The highlight color of the ink response when pressed.
+  ///
+  /// defaults to [Colors.transparent].
+  final Color backwardButtonHighlightColor;
+
   @override
   State<RangeDaysPicker> createState() => __RangeDaysPickerState();
 }
@@ -230,10 +264,9 @@ class __RangeDaysPickerState extends State<RangeDaysPicker> {
 
   @override
   void initState() {
-    final clampedInitailDate = DateUtilsX.clampDateToRange(
-        max: widget.maxDate, min: widget.minDate, date: DateTime.now());
-    _displayedMonth =
-        DateUtils.dateOnly(widget.initialDate ?? clampedInitailDate);
+    final clampedInitailDate =
+        DateUtilsX.clampDateToRange(max: widget.maxDate, min: widget.minDate, date: DateTime.now());
+    _displayedMonth = DateUtils.dateOnly(widget.initialDate ?? clampedInitailDate);
     _pageController = PageController(
       initialPage: DateUtils.monthDelta(widget.minDate, _displayedMonth!),
     );
@@ -248,10 +281,9 @@ class __RangeDaysPickerState extends State<RangeDaysPicker> {
     // but for makeing debuging easy, we will navigate to the initial date again
     // if it changes.
     if (oldWidget.initialDate != widget.initialDate) {
-      final clampedInitailDate = DateUtilsX.clampDateToRange(
-          max: widget.maxDate, min: widget.minDate, date: DateTime.now());
-      _displayedMonth =
-          DateUtils.dateOnly(widget.initialDate ?? clampedInitailDate);
+      final clampedInitailDate =
+          DateUtilsX.clampDateToRange(max: widget.maxDate, min: widget.minDate, date: DateTime.now());
+      _displayedMonth = DateUtils.dateOnly(widget.initialDate ?? clampedInitailDate);
       _pageController.jumpToPage(
         DateUtils.monthDelta(widget.minDate, _displayedMonth!),
       );
@@ -276,7 +308,7 @@ class __RangeDaysPickerState extends State<RangeDaysPicker> {
     //
     final TextStyle daysOfTheWeekTextStyle = widget.daysOfTheWeekTextStyle ??
         textTheme.titleSmall!.copyWith(
-          color: colorScheme.onSurface.withOpacity(0.30),
+          color: colorScheme.onSurface.withValues(alpha: 0.30),
           fontWeight: FontWeight.bold,
           fontSize: 14,
         );
@@ -302,11 +334,10 @@ class __RangeDaysPickerState extends State<RangeDaysPicker> {
     final TextStyle disabledCellsTextStyle = widget.disabledCellsTextStyle ??
         textTheme.titleLarge!.copyWith(
           fontWeight: FontWeight.normal,
-          color: colorScheme.onSurface.withOpacity(0.30),
+          color: colorScheme.onSurface.withValues(alpha: 0.30),
         );
 
-    final BoxDecoration disbaledCellsDecoration =
-        widget.disabledCellsDecoration;
+    final BoxDecoration disbaledCellsDecoration = widget.disabledCellsDecoration;
 
     //
     //! current
@@ -335,29 +366,26 @@ class __RangeDaysPickerState extends State<RangeDaysPicker> {
           color: colorScheme.onPrimaryContainer,
         );
 
-    final BoxDecoration selectedCellsDecoration =
-        widget.selectedCellsDecoration ??
-            BoxDecoration(
-              color: colorScheme.primaryContainer,
-              shape: BoxShape.rectangle,
-            );
+    final BoxDecoration selectedCellsDecoration = widget.selectedCellsDecoration ??
+        BoxDecoration(
+          color: colorScheme.primaryContainer,
+          shape: BoxShape.rectangle,
+        );
 
     //
     //! single
 
-    final TextStyle singleSelectedCellTextStyle =
-        widget.singleSelectedCellTextStyle ??
-            textTheme.titleLarge!.copyWith(
-              fontWeight: FontWeight.normal,
-              color: colorScheme.onPrimary,
-            );
+    final TextStyle singleSelectedCellTextStyle = widget.singleSelectedCellTextStyle ??
+        textTheme.titleLarge!.copyWith(
+          fontWeight: FontWeight.normal,
+          color: colorScheme.onPrimary,
+        );
 
-    final BoxDecoration singleSelectedCellDecoration =
-        widget.singleSelectedCellDecoration ??
-            BoxDecoration(
-              color: colorScheme.primary,
-              shape: BoxShape.circle,
-            );
+    final BoxDecoration singleSelectedCellDecoration = widget.singleSelectedCellDecoration ??
+        BoxDecoration(
+          color: colorScheme.primary,
+          shape: BoxShape.circle,
+        );
 
     //
     //
@@ -376,16 +404,16 @@ class __RangeDaysPickerState extends State<RangeDaysPicker> {
     //
     //! splash
     final splashColor = widget.splashColor ??
-        singleSelectedCellDecoration.color?.withOpacity(0.3) ??
-        colorScheme.primary.withOpacity(0.3);
+        singleSelectedCellDecoration.color?.withValues(alpha: 0.3) ??
+        colorScheme.primary.withValues(alpha: 0.3);
 
     final highlightColor = widget.highlightColor ??
-        singleSelectedCellDecoration.color?.withOpacity(0.3) ??
-        colorScheme.primary.withOpacity(0.3);
+        singleSelectedCellDecoration.color?.withValues(alpha: 0.3) ??
+        colorScheme.primary.withValues(alpha: 0.3);
     //
     //
 
-    return DeviceOrientationBuilder(builder: (context, o) {
+    return PickerDeviceOrientationBuilder(builder: (context, o) {
       late final Size size;
       switch (o) {
         case Orientation.portrait:
@@ -404,8 +432,15 @@ class __RangeDaysPickerState extends State<RangeDaysPicker> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Header(
-              previousPageSemanticLabel: widget.previousPageSemanticLabel,
-              nextPageSemanticLabel: widget.nextPageSemanticLabel,
+              forwardButtonDecoration: widget.forwardButtonDecoration,
+              forwardButtonSplashColor: widget.forwardButtonSplashColor,
+              forwardButtonHighlightColor: widget.forwardButtonHighlightColor,
+              backwardButtonDecoration: widget.backwardButtonDecoration,
+              backwardButtonSplashColor: widget.backwardButtonSplashColor,
+              backwardButtonHighlightColor: widget.forwardButtonHighlightColor,
+              previousPageSemanticLabel:
+                  widget.previousPageSemanticLabel ?? MaterialLocalizations.of(context).previousPageTooltip,
+              nextPageSemanticLabel: widget.nextPageSemanticLabel ?? MaterialLocalizations.of(context).nextPageTooltip,
               centerLeadingDate: widget.centerLeadingDate,
               leadingDateTextStyle: leadingDateTextStyle,
               slidersColor: slidersColor,
@@ -442,33 +477,27 @@ class __RangeDaysPickerState extends State<RangeDaysPicker> {
                 scrollDirection: Axis.horizontal,
                 key: _pageViewKey,
                 controller: _pageController,
-                itemCount:
-                    DateUtils.monthDelta(widget.minDate, widget.maxDate) + 1,
+                itemCount: DateUtils.monthDelta(widget.minDate, widget.maxDate) + 1,
                 onPageChanged: (monthPage) {
-                  final DateTime monthDate =
-                      DateUtils.addMonthsToMonthDate(widget.minDate, monthPage);
+                  final DateTime monthDate = DateUtils.addMonthsToMonthDate(widget.minDate, monthPage);
 
                   setState(() {
                     _displayedMonth = monthDate;
                   });
                 },
                 itemBuilder: (context, index) {
-                  final DateTime month =
-                      DateUtils.addMonthsToMonthDate(widget.minDate, index);
+                  final DateTime month = DateUtils.addMonthsToMonthDate(widget.minDate, index);
 
                   return RangeDaysView(
                     key: ValueKey<DateTime>(month),
-                    currentDate: DateUtils.dateOnly(
-                        widget.currentDate ?? DateTime.now()),
+                    currentDate: DateUtils.dateOnly(widget.currentDate ?? DateTime.now()),
                     minDate: DateUtils.dateOnly(widget.minDate),
                     maxDate: DateUtils.dateOnly(widget.maxDate),
                     displayedMonth: month,
-                    selectedEndDate: widget.selectedEndDate == null
-                        ? null
-                        : DateUtils.dateOnly(widget.selectedEndDate!),
-                    selectedStartDate: widget.selectedStartDate == null
-                        ? null
-                        : DateUtils.dateOnly(widget.selectedStartDate!),
+                    selectedEndDate:
+                        widget.selectedEndDate == null ? null : DateUtils.dateOnly(widget.selectedEndDate!),
+                    selectedStartDate:
+                        widget.selectedStartDate == null ? null : DateUtils.dateOnly(widget.selectedStartDate!),
                     daysOfTheWeekTextStyle: daysOfTheWeekTextStyle,
                     enabledCellsTextStyle: enabledCellsTextStyle,
                     enabledCellsDecoration: enabledCellsDecoration,
@@ -483,10 +512,8 @@ class __RangeDaysPickerState extends State<RangeDaysPicker> {
                     highlightColor: highlightColor,
                     splashColor: splashColor,
                     splashRadius: widget.splashRadius,
-                    onEndDateChanged: (value) =>
-                        widget.onEndDateChanged?.call(value),
-                    onStartDateChanged: (value) =>
-                        widget.onStartDateChanged?.call(value),
+                    onEndDateChanged: (value) => widget.onEndDateChanged?.call(value),
+                    onStartDateChanged: (value) => widget.onStartDateChanged?.call(value),
                   );
                 },
               ),
