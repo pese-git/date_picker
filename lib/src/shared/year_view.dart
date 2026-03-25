@@ -28,6 +28,8 @@ class YearView extends StatelessWidget {
     required this.selectedCellDecoration,
     required this.highlightColor,
     required this.splashColor,
+    this.yearWidgetMargin = EdgeInsets.zero,
+    this.selectedStateIsEnabled = true,
     this.splashRadius,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
@@ -113,6 +115,13 @@ class YearView extends StatelessWidget {
   /// The radius of the ink splash.
   final double? splashRadius;
 
+  /// The margin of year widget.
+  final EdgeInsetsGeometry? yearWidgetMargin;
+
+  /// A boolean field indicating if the selected state feature is currently
+  /// enabled or active.
+  final bool selectedStateIsEnabled;
+
   @override
   Widget build(BuildContext context) {
     final int currentYear = currentDate.year;
@@ -146,7 +155,7 @@ class YearView extends StatelessWidget {
         style = currentDateTextStyle;
         decoration = currentDateDecoration;
       }
-      if (isSelected) {
+      if (isSelected && selectedStateIsEnabled) {
         //
         //
         style = selectedCellTextStyle;
@@ -159,6 +168,7 @@ class YearView extends StatelessWidget {
       }
 
       Widget monthWidget = Container(
+        margin: yearWidgetMargin,
         decoration: decoration,
         child: Center(
           child: Text(

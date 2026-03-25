@@ -109,7 +109,7 @@ Future<DateTime?> showDatePickerDialog({
                 onDateSelected: (value) => Navigator.pop(context, value),
                 initialPickerType: initialPickerType,
                 padding: contentPadding,
-                currentDateDecoration: currentDateDecoration,
+                currentDateDayDecoration: currentDateDecoration,
                 currentDateTextStyle: currentDateTextStyle,
                 disabledCellsDecoration: disabledCellsDecoration,
                 disabledCellsTextStyle: disabledCellsTextStyle,

@@ -181,7 +181,7 @@ class RangeDaysView extends StatelessWidget {
   ) {
     final List<Widget> result = <Widget>[];
     final weekdayNames =
-        DateFormat('', locale.toString()).dateSymbols.SHORTWEEKDAYS;
+        DateFormat('', locale.toString()).dateSymbols.NARROWWEEKDAYS;
 
     for (int i = localizations.firstDayOfWeekIndex; true; i = (i + 1) % 7) {
       // to save space in arabic as arabic don't has short week days.
